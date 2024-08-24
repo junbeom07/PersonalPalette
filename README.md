@@ -1,5 +1,7 @@
 # PersonalPalette
 설치해야할것
+
+--------------------------------------
 pip install opencv-python
 
 pip install numpy
