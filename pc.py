@@ -34,6 +34,8 @@ try:
         # 피부 영역만 추출합니다.
         skin = cv2.bitwise_and(frame, frame, mask=skin_msk)
 
+        
+
         # 피부 영역을 HSV 색 공간으로 변환합니다.
         skin_hsv = cv2.cvtColor(skin, cv2.COLOR_BGR2HSV)
 
@@ -43,7 +45,6 @@ try:
         s_mean = cv2.mean(s, mask=skin_msk)[0]
         v_mean = cv2.mean(v, mask=skin_msk)[0]
 
-        # S와 V값을 기반으로 텍스트 출력
         if s_mean >= 226:
             color_text = "Vivid"
         elif 142 <= s_mean < 226:
@@ -75,13 +76,21 @@ try:
         # BGR 이미지를 RGB로 변환 (matplotlib는 RGB 색상 형식을 사용하므로)
         skin_rgb = cv2.cvtColor(skin, cv2.COLOR_BGR2RGB)
 
+        # HSV 값을 문자열로 생성 (가로 배치)
+        h_text = f"H: {h_mean:.2f}"
+        s_text = f"S: {s_mean:.2f}"
+        v_text = f"V: {v_mean:.2f}"
+        
+
         # Matplotlib의 플롯을 업데이트합니다.
         ax.clear()
         ax.imshow(skin_rgb)
         ax.axis('off')  # 축을 숨깁니다.
-        ax.set_title(f'Skin Detection - {color_text}', fontsize=14, color='white', pad=20, bbox=dict(facecolor='black', alpha=0.5))
-        plt.pause(0.01)  # 플롯 업데이트 지연
+        ax.set_title(f'Skin Detection - {color_text}| {h_text} | {s_text} | {v_text}', fontsize=14, color='white', pad=20, bbox=dict(facecolor='black', alpha=0.5))
+        plt.pause(0.01)  # 플롯 업데이트 지연\
 
+
+        
 finally:
     # 웹캠을 닫고 모든 윈도우를 종료합니다.
     cap.release()

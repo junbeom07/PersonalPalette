@@ -16,6 +16,9 @@ skin.py
 
 main.py
 얼굴 이미지에서 피부색을 검출하고, 그 피부색의 평균 HSV (Hue, Saturation, Value) 값을 계산하여 결과를 화면에 표시함( 미완성)
+
+pc.py
+가장 최근 파일
 v 명도 값 체크포인트
 
 255
