@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # 이미지 파일 경로
-image_path = 'd.jpg'
+image_path = 'hsv.jpg'
 
 # 이미지를 BGR 색상 공간으로 읽기
 image_bgr = cv2.imread(image_path)
