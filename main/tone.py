@@ -2,6 +2,9 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
+# 이미지를 불러옵니다.
+face_img = cv2.imread("ii.jpg")
+
 def extract_skin(image, lower_bound, upper_bound):
     """
     주어진 이미지에서 피부 영역을 추출합니다.
@@ -51,8 +54,7 @@ def calculate_average_lab_b(image, mask):
     
     return average_b
 
-# 이미지를 불러옵니다.
-face_img = cv2.imread("img.jpg")
+
 
 # YCrCb 색 공간에서 피부색 범위를 정의합니다.
 lower = np.array([0, 133, 77], dtype=np.uint8)
