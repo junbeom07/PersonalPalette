@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
 def extract_skin(image, lower_bound, upper_bound):
     """
@@ -25,21 +26,30 @@ def extract_skin(image, lower_bound, upper_bound):
 
     return skin, skin_mask
 
-def on_mouse(event, x, y, flags, param):
+def calculate_average_lab_b(image, mask):
     """
-    마우스 이벤트 처리 함수
+    피부 영역의 평균 Lab B 값을 계산합니다.
+
+    Parameters:
+    - image: 피부 영역 이미지 (BGR 형식)
+    - mask: 피부 영역 마스크 (binary mask)
+
+    Returns:
+    - 평균 Lab B 값
     """
-    if event == cv2.EVENT_MOUSEMOVE:
-        if x >= 0 and y >= 0 and x < skin.shape[1] and y < skin.shape[0]:
-            # 피부 영역의 Lab 색 공간으로 변환
-            lab_color = cv2.cvtColor(skin, cv2.COLOR_BGR2Lab)
-            lab_b_value = lab_color[y, x, 2]
-            text = f'Lab B value: {lab_b_value:.2f}'
-            
-            # 결과 이미지에 Lab B 값 표시
-            display_image = skin.copy()
-            cv2.putText(display_image, text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
-            cv2.imshow("Skin Detection", display_image)
+    # 피부 영역만 남기기 위해 마스크를 적용
+    skin_masked = cv2.bitwise_and(image, image, mask=mask)
+    
+    # 피부 영역의 Lab 색 공간으로 변환
+    skin_lab = cv2.cvtColor(skin_masked, cv2.COLOR_BGR2Lab)
+    
+    # 마스크가 적용된 피부 영역의 Lab B 값만 추출
+    b_values = skin_lab[:, :, 2][mask > 0]
+    
+    # Lab B 값의 평균 계산
+    average_b = np.mean(b_values)
+    
+    return average_b
 
 # 이미지를 불러옵니다.
 face_img = cv2.imread("img.jpg")
@@ -55,10 +65,15 @@ skin, skin_msk = extract_skin(face_img, lower, upper)
 if cv2.countNonZero(skin_msk) == 0:
     print("피부 영역이 검출되지 않았습니다.")
 else:
-    # 원본 이미지를 보여주면서 마우스 이벤트 처리 설정
-    cv2.imshow("Skin Detection", skin)
-    cv2.setMouseCallback("Skin Detection", on_mouse)
+    # 피부 영역의 평균 Lab B 값 계산
+    average_b = calculate_average_lab_b(skin, skin_msk) -128
     
-    # 사용자 입력 대기
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # BGR 이미지를 RGB로 변환 (matplotlib은 RGB를 사용합니다)
+    skin_rgb = cv2.cvtColor(skin, cv2.COLOR_BGR2RGB)
+    
+    # Plotting the image
+    fig, ax = plt.subplots()
+    ax.imshow(skin_rgb)
+    ax.set_title(f'Skin Detection - Average Lab B value: {average_b:.2f}')
+    
+    plt.show()
